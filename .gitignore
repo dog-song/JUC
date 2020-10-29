@@ -1,5 +1,6 @@
 ##ignore this file##
-.idea
 
 /.idea/
 /juc/target/
+/*.iml
+/juc/*.iml
