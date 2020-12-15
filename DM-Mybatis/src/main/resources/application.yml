@@ -1,13 +1,13 @@
+server:
+  port: 10001
 spring:
   datasource:
     driver-class-name: dm.jdbc.driver.DmDriver
-    url: jdbc:dm://10.0.3.197:5236/DMSERVER?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&allowMultiQueries=true
-#    username: SYSDBA
-#    password: SYSDBA
-    username: JC
-    password: JC_Test123
-#    druid:
-#      url: ${spring.datasource.url}
-#      driver-class-name: ${spring.datasource.driver-class-name}
-#      username: ${spring.datasource.username}
-#      password: ${spring.datasource.password}
+    url: jdbc:dm://10.0.3.197:5237/DMSERVER?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8_general_ci&allowMultiQueries=true
+    username: toushibao
+    password: yunzhihui123
+
+    druid:
+      test-while-idle: true
+      validation-query: SELECT 1
+
