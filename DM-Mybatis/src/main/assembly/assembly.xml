@@ -9,6 +9,12 @@
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>${project.basedir}</directory>
 			<outputDirectory>./</outputDirectory>
 			<includes>
