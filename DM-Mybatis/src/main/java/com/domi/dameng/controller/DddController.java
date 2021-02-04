@@ -34,7 +34,7 @@ public class DddController {
         } catch (Exception e) {
             resultModel.setCode(404);
             resultModel.setMsg(MessageStatus.Fail);
-            resultModel.setData(e.getCause());
+            resultModel.setData(e.getMessage());
         }
         return resultModel;
     }
@@ -50,7 +50,7 @@ public class DddController {
         } catch (Exception e) {
             resultModel.setCode(404);
             resultModel.setMsg(MessageStatus.Fail);
-            resultModel.setData(e.getCause());
+            resultModel.setData(e.getMessage());
         }
         return resultModel;
     }
@@ -67,7 +67,7 @@ public class DddController {
         } catch (Exception e) {
             resultModel.setCode(404);
             resultModel.setMsg(MessageStatus.Fail);
-            resultModel.setData(e.getCause());
+            resultModel.setData(e.getMessage());
         }
         return resultModel;
     }
@@ -83,7 +83,7 @@ public class DddController {
         } catch (Exception e) {
             resultModel.setCode(404);
             resultModel.setMsg(MessageStatus.Fail);
-            resultModel.setData(e.getCause());
+            resultModel.setData(e.getMessage());
         }
         return resultModel;
     }
