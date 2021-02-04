@@ -1,0 +1,8 @@
+server:
+  port: 90001
+
+# minio 文件存储配置信息
+minio:
+  endpoint: http://10.0.7.112:9000
+  accesskey: minioadmin
+  secretKey: minioadmin
