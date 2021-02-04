@@ -4,3 +4,8 @@
 /juc/target/
 /*.iml
 /juc/*.iml
+/DM-Mybatis/target/
+/dameng/target/
+/leetcode/target/
+/springboot-minio/target/
+/springboot-nacos/target/
