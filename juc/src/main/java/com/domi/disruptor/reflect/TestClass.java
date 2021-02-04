@@ -57,10 +57,13 @@ public class TestClass {
         //TestClass testClass = new TestClass();
         //TestClass testClass1 = new TestClass();
         //TestClass testClass2 = (TestClass) Class.forName("com.domi.disruptor.reflect.TestClass").newInstance();
-        Class c = Class.forName("com.domi.disruptor.reflect.TestClass",true,TestClass.class.getClassLoader());
+
+        /*Class c = Class.forName("com.domi.disruptor.reflect.TestClass",true,TestClass.class.getClassLoader());
         Method[] methods = c.getMethods();
         for (Method method : methods) {
             System.out.println(method);
-        }
+        }*/
+
+        TestClass test = new TestClass();
     }
 }
