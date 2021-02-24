@@ -1,10 +1,8 @@
 package com.example.demo.until;
 
-import com.example.demo.config.MinIoProperties;
-import io.minio.MinioClient;
-import io.minio.ObjectStat;
-import io.minio.PutObjectOptions;
-import io.minio.messages.Bucket;
+import com.example.demo.config.MinIoConfig;
+import io.minio.*;
+import io.minio.http.Method;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -16,7 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.List;
 
 /**
  * Created by Domi on 2021/02/04.
@@ -26,9 +23,10 @@ import java.util.List;
 public class MinIoUtil {
 
     @Autowired
-    MinIoProperties minIoProperties;
+    MinIoConfig minIoConfig;
 
-    private static MinioClient minioClient;
+    @Autowired
+    private /*static*/ MinioClient minioClient;
 
     /**
      * 初始化minio配置
@@ -36,104 +34,43 @@ public class MinIoUtil {
      * @param :
      * @return: void
      */
-    @PostConstruct
+    /*@PostConstruct
     public void init() {
         try {
-            minioClient = new MinioClient(minIoProperties.getUrl(), minIoProperties.getAccessKey(),
-                    minIoProperties.getSecretKey());
-            createBucket(minIoProperties.getBucketName());
+            minioClient = MinioClient.builder().endpoint(minIoConfig.getUrl()).credentials(minIoConfig.getAccessKey(), minIoConfig.getSecretKey()).build();
         } catch (Exception e) {
             e.printStackTrace();
             log.error("初始化minio配置异常: 【{}】", e.fillInStackTrace());
         }
-    }
-
-    /**
-     * 判断 bucket是否存在
-     *
-     * @param bucketName:
-     *            桶名
-     * @return: boolean
-     */
-    @SneakyThrows(Exception.class)
-    public static boolean bucketExists(String bucketName) {
-        return minioClient.bucketExists(bucketName);
-    }
-
-    /**
-     * 创建 bucket
-     *
-     * @param bucketName:
-     *            桶名
-     * @return: void
-     */
-    @SneakyThrows(Exception.class)
-    public static void createBucket(String bucketName) {
-        boolean isExist = minioClient.bucketExists(bucketName);
-        if (!isExist) {
-            minioClient.makeBucket(bucketName);
-        }
-    }
-
-    /**
-     * 获取全部bucket
-     *
-     * @param :
-     * @return: java.util.List<io.minio.messages.Bucket>
-     */
-    @SneakyThrows(Exception.class)
-    public static List<Bucket> getAllBuckets() {
-        return minioClient.listBuckets();
-    }
+    }*/
 
     /**
      * 文件上传
      *
      * @param bucketName:
      *            桶名
-     * @param fileName:
-     *            文件名
-     * @param filePath:
-     *            文件路径
-     * @return: void
-     */
-    @SneakyThrows(Exception.class)
-    public static void upload(String bucketName, String fileName, String filePath) {
-        minioClient.putObject(bucketName, fileName, filePath, null);
-    }
-
-    /**
-     * 文件上传
-     *
-     * @param bucketName:
-     *            桶名
-     * @param fileName:
-     *            文件名
-     * @param stream:
-     *            文件流
-     * @return: java.lang.String : 文件url地址
-     */
-    @SneakyThrows(Exception.class)
-    public static String upload(String bucketName, String fileName, InputStream stream) {
-        minioClient.putObject(bucketName, fileName, stream, new PutObjectOptions(stream.available(), -1));
-        return getFileUrl(bucketName, fileName);
-    }
-
-    /**
-     * 文件上传
-     *
-     * @param bucketName:
-     *            桶名
-     * @param file:
+     * @param multipartFile:
      *            文件
      * @return: java.lang.String : 文件url地址
      */
-    @SneakyThrows(Exception.class)
-    public static String upload(String bucketName, MultipartFile file) {
-        final InputStream is = file.getInputStream();
-        final String fileName = file.getOriginalFilename();
-        minioClient.putObject(bucketName, fileName, is, new PutObjectOptions(is.available(), -1));
-        is.close();
+    public /*static*/ String upload(String bucketName, MultipartFile multipartFile) {
+        final String fileName = multipartFile.getOriginalFilename();
+        String contentType = multipartFile.getContentType();
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+            if (!bucketExists) {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            }
+            minioClient.putObject(PutObjectArgs.builder().bucket(bucketName)
+                    .object(fileName)
+                    .stream(inputStream, multipartFile.getSize(), -1)
+                    .contentType(contentType).build()
+            );
+            log.info("附件上传成功, fileName: {}, contentType: {}, size(Byte): {}", fileName, contentType, multipartFile.getSize());
+        } catch (Exception e) {
+            log.error("附件上传失败, fileName: {}, contentType: {}, size(Byte): {}", fileName, contentType, multipartFile.getSize());
+        }
+
         return getFileUrl(bucketName, fileName);
     }
 
@@ -146,9 +83,14 @@ public class MinIoUtil {
      *            文件名
      * @return: void
      */
-    @SneakyThrows(Exception.class)
-    public static void deleteFile(String bucketName, String fileName) {
-        minioClient.removeObject(bucketName, fileName);
+    public /*static*/ void deleteFile(String bucketName, String fileName) {
+        try {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(fileName).build());
+            log.info("附件: {}, 删除成功!", fileName);
+        } catch (Exception e) {
+            log.error("附件: {}, 删除失败...", fileName);
+            log.error(String.valueOf(e.getStackTrace()));
+        }
     }
 
     /**
@@ -158,19 +100,21 @@ public class MinIoUtil {
      *            桶名
      * @param fileName:
      *            文件名
-     * @param response:
+     * @param httpServletResponse:
      * @return: void
      */
-    @SneakyThrows(Exception.class)
-    public static void download(String bucketName, String fileName, HttpServletResponse response) {
-        // 获取对象的元数据
-        final ObjectStat stat = minioClient.statObject(bucketName, fileName);
-        response.setContentType(stat.contentType());
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        InputStream is = minioClient.getObject(bucketName, fileName);
-        IOUtils.copy(is, response.getOutputStream());
-        is.close();
+    public /*static*/ void download(String bucketName, String fileName, HttpServletResponse httpServletResponse) {
+        try {
+            StatObjectResponse statObjectResponse = minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(fileName).build());
+            httpServletResponse.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            httpServletResponse.setContentType(statObjectResponse.contentType());
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            InputStream inputStream = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
+            IOUtils.copy(inputStream, httpServletResponse.getOutputStream());
+        } catch (Exception e) {
+            log.error("附件下载失败, fileName: {}, bucketName: {}", fileName, bucketName);
+            log.error(String.valueOf(e.getStackTrace()));
+        }
     }
 
     /**
@@ -181,11 +125,16 @@ public class MinIoUtil {
      * @param fileName:
      *            文件名
      * @return: java.lang.String
-     * @date : 2020/8/16 22:07
      */
-    @SneakyThrows(Exception.class)
-    public static String getFileUrl(String bucketName, String fileName) {
-        return minioClient.presignedGetObject(bucketName, fileName);
+    public /*static*/ String getFileUrl(String bucketName, String fileName) {
+        String fileUrl = "";
+        try{
+            minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(fileName).build());
+            fileUrl = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder().method(Method.GET).bucket(bucketName).object(fileName).build());
+        } catch (Exception e){
+            log.error("获取预览URL失败, fileUrl: {}", fileUrl);
+        }
+        return fileUrl;
     }
 
 }

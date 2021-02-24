@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.config.MinIoProperties;
+import com.example.demo.config.MinIoConfig;
 import com.example.demo.until.MinIoUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,13 +21,15 @@ import javax.servlet.http.HttpServletResponse;
 public class MinIoController {
 
     @Autowired
-    MinIoProperties minIoProperties;
+    MinIoConfig minIoConfig;
 
+    @Autowired
+    MinIoUtil minIoUtil;
 
     @ApiOperation(value = "上传文件")
     @PostMapping(value = "/upload")
     public String upload(@RequestParam("file") MultipartFile file){
-        String fileUrl = MinIoUtil.upload(minIoProperties.getBucketName(), file);
+        String fileUrl = minIoUtil.upload(minIoConfig.getBucketName(), file);
         log.info("文件下载地址：" +fileUrl );
         return "文件下载地址：" + fileUrl;
     }
@@ -35,13 +37,13 @@ public class MinIoController {
     @ApiOperation(value = "下载文件")
     @GetMapping(value = "/download")
     public void download(@RequestParam("fileName") String fileName, HttpServletResponse response){
-        MinIoUtil.download(minIoProperties.getBucketName(), fileName, response);
+        minIoUtil.download(minIoConfig.getBucketName(), fileName, response);
     }
 
     @ApiOperation(value = "删除文件")
     @GetMapping(value = "/delete")
     public String delete(@RequestParam("fileName") String fileName){
-        MinIoUtil.deleteFile(minIoProperties.getBucketName(), fileName);
+        minIoUtil.deleteFile(minIoConfig.getBucketName(), fileName);
         return "删除成功";
     }
 }
