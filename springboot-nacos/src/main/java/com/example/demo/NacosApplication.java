@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @Slf4j
-public class Application {
+public class NacosApplication {
 
     public static void main(String[] args) {
         log.info("12345");
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(NacosApplication.class, args);
     }
 }

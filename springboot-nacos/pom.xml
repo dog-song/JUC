@@ -17,6 +17,7 @@
         <mybatis.version>2.1.4</mybatis.version>
         <swagger2.version>2.9.2</swagger2.version>
         <nacos-client.version>1.2.1</nacos-client.version>
+        <jackson.version>2.12.2</jackson.version>
     </properties>
 
     <dependencies>
@@ -90,6 +91,22 @@
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <!--在引用时请在maven中央仓库搜索最新版本号-->
             <version>2.0.2</version>
+        </dependency>
+        <!--jackson 依赖-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 
