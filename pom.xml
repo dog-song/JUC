@@ -14,7 +14,7 @@
         <module>leetcode</module>
         <module>springboot-nacos</module>
         <module>springboot-minio</module>
-        <module>CW_Demo</module>
+        <module>springboot-quartz</module>
     </modules>
     <packaging>pom</packaging>
 
