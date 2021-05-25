@@ -1,4 +1,4 @@
-package com.domi.algorithm;
+package com.domi.algorithm.sort;
 
 import java.util.Arrays;
 
