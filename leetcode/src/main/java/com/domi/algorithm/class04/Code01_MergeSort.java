@@ -12,7 +12,7 @@ public class Code01_MergeSort {
 
 	// 请把arr[L..R]排有序
 	// l...r N
-	// T(N) = 2 * T(N / 2) + O(N)
+	// T(N) = 2 * T(N / 2) + O(N) -- master公式
 	// O(N * logN)
 	public static void process(int[] arr, int L, int R) {
 		if (L == R) { // base case

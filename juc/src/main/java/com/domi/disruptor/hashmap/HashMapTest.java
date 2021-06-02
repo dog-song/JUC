@@ -13,6 +13,7 @@ public class HashMapTest {
 
         HashMap<String, Object> hashMap = new HashMap<>();
 
+        "121".hashCode();
         Object put = hashMap.put("12", 111);
     }
 }
