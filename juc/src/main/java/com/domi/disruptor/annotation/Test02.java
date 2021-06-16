@@ -9,11 +9,19 @@ import java.lang.annotation.*;
  */
 public class Test02 {
 
-    @MyAnnotation
+
+    private String name;
+
     public void test() {
         System.out.println();
     }
 
+    @MyAnnotation("dogsong")
+    public static void main(String[] args) {
+        Test02 test02 = new Test02();
+        MyAnnotation annotation = Test02.class.getAnnotation(MyAnnotation.class);
+        System.out.println(annotation);
+    }
 }
 
 /**
@@ -28,5 +36,5 @@ public class Test02 {
 // Inherited子类是否可以继承父类的注解
 @Inherited
 @interface MyAnnotation{
-
+    String value();
 }

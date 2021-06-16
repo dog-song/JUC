@@ -9,3 +9,5 @@
 /leetcode/target/
 /springboot-minio/target/
 /springboot-nacos/target/
+*/target/
+*/*.iml

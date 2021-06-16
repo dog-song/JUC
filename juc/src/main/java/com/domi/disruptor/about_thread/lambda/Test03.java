@@ -36,7 +36,7 @@ public class Test03 {
         love.lambda(3);
 
 
-        //简化1: 去掉括号
+        //简化1: 去掉括号 和 类型
         love = a->{
             System.out.println("我开始喜欢lambda了...."+a);
         };
