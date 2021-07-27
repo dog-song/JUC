@@ -1,6 +1,7 @@
 package com.domi.disruptor.annotation;
 
 import java.lang.annotation.*;
+import java.lang.reflect.Method;
 
 /**
  * @author domisong.
@@ -9,18 +10,15 @@ import java.lang.annotation.*;
  */
 public class Test02 {
 
-
-    private String name;
-
-    public void test() {
-        System.out.println();
-    }
-
-    @MyAnnotation("dogsong")
+    @MyAnnotation(value = "dddd")
     public static void main(String[] args) {
-        Test02 test02 = new Test02();
-        MyAnnotation annotation = Test02.class.getAnnotation(MyAnnotation.class);
-        System.out.println(annotation);
+        Method[] methods = Test02.class.getMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(MyAnnotation.class)) {
+                MyAnnotation annotation = method.getAnnotation(MyAnnotation.class);
+                System.out.println(annotation.value());
+            }
+        }
     }
 }
 
